@@ -1,20 +1,8 @@
 package co.uk.cordacodeclube.contract
 
-import jdk.nashorn.tools.ShellFunctions.input
 import net.corda.core.contracts.*
-import net.corda.finance.*
-import net.corda.testing.contracts.DummyState
 import net.corda.testing.node.MockServices
-import net.corda.testing.node.ledger
-import net.corda.training.ALICE
-import net.corda.training.BOB
-import net.corda.training.DUMMY
-import net.corda.training.MINICORP
-import net.corda.training.state.StatementState
-import org.junit.*
 import org.testng.annotations.Test
-import java.lang.Compiler.command
-import java.util.*
 
 /**
  * Practical exercise instructions for Contracts Part 1.
