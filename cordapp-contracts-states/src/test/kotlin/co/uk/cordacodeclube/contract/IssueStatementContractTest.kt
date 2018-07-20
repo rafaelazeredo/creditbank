@@ -10,7 +10,7 @@ import org.testng.annotations.Test
  * As with the [StatementStateTests] uncomment each unit test and run them one at a time. Use the body of the tests and the
  * task description to determine how to get the tests to pass.
  */
-class StatementIssueTests {
+class IssueStatementTest {
     // A pre-defined dummy command.
     class DummyCommand : TypeOnlyCommandData()
     private var ledgerServices = MockServices(listOf("net.corda.training"))
