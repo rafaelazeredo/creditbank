@@ -1,6 +1,10 @@
+package net.corda.training.state
+
+
 import net.corda.core.contracts.CommandAndState
 import net.corda.core.contracts.OwnableState
 import net.corda.core.identity.AbstractParty
+import net.corda.core.schemas.QueryableState
 import java.util.*
 
 // *********
@@ -16,12 +20,15 @@ data class StatementState(override val owner :AbstractParty,
                           val amountOverdue: Double?,
                           val originalCreditAmountOrLimit: Double?,
                           val responsibility: Responsibility = Responsibility.INDIVIDUAL
-) : OwnableState {
+) : OwnableState, QueryableState{
+
     override fun withNewOwner(newOwner: AbstractParty): CommandAndState {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val participants: List<AbstractParty> get() = listOf()
+    override val participants: List<AbstractParty> get() = listOf(owner)
+
+
 }
 
 

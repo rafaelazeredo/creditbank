@@ -1,8 +1,18 @@
 package co.uk.cordacodeclube.contract
 
+
+import StatementContract
+import co.uk.cordacodeclube.state.ALICE
+import co.uk.cordacodeclube.state.BOB
 import net.corda.core.contracts.*
+import net.corda.testing.contracts.DummyState
 import net.corda.testing.node.MockServices
+import net.corda.testing.node.ledger
+import net.corda.training.state.AccountType
+import net.corda.training.state.Responsibility
+import net.corda.training.state.StatementState
 import org.testng.annotations.Test
+import java.util.*
 
 /**
  * Practical exercise instructions for Contracts Part 1.
@@ -13,7 +23,7 @@ import org.testng.annotations.Test
 class IssueStatementTest {
     // A pre-defined dummy command.
     class DummyCommand : TypeOnlyCommandData()
-    private var ledgerServices = MockServices(listOf("net.corda.training"))
+    private var ledgerServices = MockServices(listOf("net.corda.training","co.uk.cordacodeclub"))
 
 
     /**
@@ -24,7 +34,14 @@ class IssueStatementTest {
      */
     @Test
     fun mustRejectDummyCommand() {
-
+        val statement = issueStatementState()
+        ledgerServices.ledger {
+            transaction {
+                output(StatementContract.STATEMENT_CONTRACT_ID, statement)
+                command(listOf(ALICE.publicKey), DummyCommand())
+                this.failsWith("Command not found.")
+            }
+        }
     }
 
 
@@ -59,8 +76,18 @@ class IssueStatementTest {
      */
     @Test
     fun mustIncludeIssueCommand() {
-     
+        val statement = issueStatementState()
+
+        ledgerServices.ledger {
+            transaction {
+                output(StatementContract.STATEMENT_CONTRACT_ID, statement)
+                command(listOf(ALICE.publicKey),StatementContract.Commands.Issue())
+                this.verifies()
+            }
+        }
     }
+
+
 
     /**
      * Task 2.
@@ -84,7 +111,16 @@ class IssueStatementTest {
      */
     @Test
     fun issueTransactionMustHaveNoInputs() {
-        
+        val statement = issueStatementState()
+
+        ledgerServices.ledger {
+            transaction {
+                input(StatementContract.STATEMENT_CONTRACT_ID, DummyState())
+                output(StatementContract.STATEMENT_CONTRACT_ID, statement)
+                command(listOf(ALICE.publicKey),StatementContract.Commands.Issue())
+                this.failsWith("Issue command cannot have inputs.")
+            }
+        }
     }
 
     /**
@@ -96,6 +132,17 @@ class IssueStatementTest {
      */
     @Test
     fun issueTransactionMustHaveOneOutput() {
+        val output1 = issueStatementState()
+        val output2 = issueStatementState()
+
+        ledgerServices.ledger {
+            transaction {
+                output(StatementContract.STATEMENT_CONTRACT_ID, output1)
+                output(StatementContract.STATEMENT_CONTRACT_ID, output2)
+                command(listOf(ALICE.publicKey),StatementContract.Commands.Issue())
+                this.failsWith("Issue Command cannot have more than 1 output.")
+            }
+        }
     }
 
     /**
@@ -119,6 +166,15 @@ class IssueStatementTest {
      */
     @Test
     fun cannotCreateZeroValueStatements() {
+        val output = issueStatementStateWithZeroAmount()
+
+        ledgerServices.ledger {
+            transaction {
+                output(StatementContract.STATEMENT_CONTRACT_ID, output)
+                command(listOf(ALICE.publicKey),StatementContract.Commands.Issue())
+                this.failsWith("Cannot issue statement with amount <= 0.")
+            }
+        }
     }
 
     /**
@@ -142,7 +198,20 @@ class IssueStatementTest {
      */
     @Test
     fun ownerMustSignIssueTransaction() {
+        val output = issueStatementStateWithZeroAmount()
 
+        ledgerServices.ledger {
+            transaction {
+                output(StatementContract.STATEMENT_CONTRACT_ID, output)
+                command(listOf(BOB.publicKey),StatementContract.Commands.Issue())
+                this.failsWith("Only owner can sign.")
+            }
+            transaction {
+                output(StatementContract.STATEMENT_CONTRACT_ID, output)
+                command(listOf(ALICE.publicKey),StatementContract.Commands.Issue())
+                this.verifies()
+            }
+        }
     }
 
     /**
@@ -153,7 +222,7 @@ class IssueStatementTest {
      */
     @Test
     fun participantsListHasOwnerIssueTransaction() {
-
+    //How to create a Statement where owner is not a participant?
     }
 
 
@@ -165,7 +234,15 @@ class IssueStatementTest {
      */
     @Test
     fun ninoIsMandatoryIssueTransaction() {
+        val output = issueStatementStateEmptyNino()
 
+        ledgerServices.ledger {
+            transaction {
+                output(StatementContract.STATEMENT_CONTRACT_ID, output)
+                command(listOf(BOB.publicKey),StatementContract.Commands.Issue())
+                this.failsWith("Only owner can sign.")
+            }
+        }
     }
 
 
@@ -177,7 +254,7 @@ class IssueStatementTest {
      */
     @Test
     fun dateReportedIsMandatoryIssueTransaction() {
-
+        // how to create Statement with null dateReported??
     }
 
 
@@ -189,9 +266,18 @@ class IssueStatementTest {
      */
     @Test
     fun accountTypeIsMandatoryIssueTransaction() {
-
+        // how to create Statement with null AccountType??
     }
 
+    private fun issueStatementStateWithZeroAmount() = issueStatementState(null,0.0)
 
+    private fun issueStatementStateEmptyNino() = issueStatementState("")
 
+    private fun issueStatementState (nino : String? = "ST123DT", amountOrLastBalance: Double? = 50.0): StatementState {
+        return StatementState (ALICE.party,
+                                nino!!,
+                                Date(),
+                                AccountType.CREDIT,
+                                "0123456", Date(), amountOrLastBalance, 100.0, 200.0, Responsibility.INDIVIDUAL)
+    }
 }
