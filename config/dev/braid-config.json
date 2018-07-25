@@ -1,0 +1,11 @@
+{
+  "Notary": {
+    "port": 8080
+  },
+  "PartyA": {
+    "port": 8081
+  },
+  "PartyB": {
+    "port": 8082
+  }
+}
