@@ -1,4 +1,7 @@
+package co.uk.cordacodeclub.contract
 
+import net.corda.core.contracts.*
+import net.corda.core.transactions.LedgerTransaction
 
 val STATEMENT_CONTRACT_ID = "co.uk.cordacodeclub.contract.StatementContract"
 

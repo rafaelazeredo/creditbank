@@ -6,7 +6,6 @@ import net.corda.core.serialization.CordaSerializable
 @CordaSerializable
 class CustomerTransaction(val amount : Int, val description : String,val debit : Boolean)
 
-
 interface CreditBankApi {
   fun getLastTransaction() : CustomerTransaction
   fun addTransaction(customerTransaction: CustomerTransaction)
