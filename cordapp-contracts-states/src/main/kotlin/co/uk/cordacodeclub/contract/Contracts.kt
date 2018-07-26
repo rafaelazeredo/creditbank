@@ -3,9 +3,13 @@ package co.uk.cordacodeclub.contract
 import net.corda.core.contracts.*
 import net.corda.core.transactions.LedgerTransaction
 
-val STATEMENT_CONTRACT_ID = "co.uk.cordacodeclub.contract.StatementContract"
-
 class StatementContract : Contract {
+
+    companion object {
+        @JvmStatic
+        val STATEMENT_CONTRACT_ID = "co.uk.cordacodeclub.contract.StatementContract"
+    }
+
     // A transaction is considered valid if the verify() function of the contract of each of the transaction's input
     // and output states does not throw an exception.
     override fun verify(tx: LedgerTransaction) {
