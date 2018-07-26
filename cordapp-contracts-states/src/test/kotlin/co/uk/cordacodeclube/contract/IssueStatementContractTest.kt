@@ -1,16 +1,16 @@
 package co.uk.cordacodeclube.contract
 
 
-import StatementContract
+import co.uk.cordacodeclub.contract.StatementContract
+import co.uk.cordacodeclub.state.AccountType
+import co.uk.cordacodeclub.state.Responsibility
+import co.uk.cordacodeclub.state.StatementState
 import co.uk.cordacodeclube.state.ALICE
 import co.uk.cordacodeclube.state.BOB
 import net.corda.core.contracts.*
 import net.corda.testing.contracts.DummyState
 import net.corda.testing.node.MockServices
 import net.corda.testing.node.ledger
-import net.corda.training.state.AccountType
-import net.corda.training.state.Responsibility
-import net.corda.training.state.StatementState
 import org.testng.annotations.Test
 import java.util.*
 
@@ -274,7 +274,7 @@ class IssueStatementTest {
     private fun issueStatementStateEmptyNino() = issueStatementState("")
 
     private fun issueStatementState (nino : String? = "ST123DT", amountOrLastBalance: Double? = 50.0): StatementState {
-        return StatementState (ALICE.party,
+        return StatementState.issue(ALICE.party,
                                 nino!!,
                                 Date(),
                                 AccountType.CREDIT,

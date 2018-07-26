@@ -13,7 +13,7 @@ class FlowTests {
 
     init {
         listOf(a, b).forEach {
-            it.registerInitiatedFlow(Responder::class.java)
+//            it.registerInitiatedFlow(Responder::class.java)
         }
     }
 
