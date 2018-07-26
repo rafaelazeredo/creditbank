@@ -55,6 +55,7 @@ dependencies {
 
     // CorDapp dependencies
     // Specify your CorDapp's dependencies below, including dependent CorDapps.
+    compile "io.bluebank.braid:braid-corda:$braid_version"
     cordapp project(":cordapp-contracts-states")
 }
 
