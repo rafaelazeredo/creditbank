@@ -2,8 +2,6 @@ import net.corda.core.contracts.CommandData
 import net.corda.core.contracts.Contract
 import net.corda.core.transactions.LedgerTransaction
 
-
-
 class StatementContract : Contract {
     companion object {
         @JvmStatic
