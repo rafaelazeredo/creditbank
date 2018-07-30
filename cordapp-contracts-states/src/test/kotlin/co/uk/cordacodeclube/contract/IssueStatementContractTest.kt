@@ -11,7 +11,8 @@ import net.corda.core.contracts.*
 import net.corda.testing.contracts.DummyState
 import net.corda.testing.node.MockServices
 import net.corda.testing.node.ledger
-import org.testng.annotations.Test
+import org.junit.Test
+import java.lang.Compiler.command
 import java.util.*
 
 /**

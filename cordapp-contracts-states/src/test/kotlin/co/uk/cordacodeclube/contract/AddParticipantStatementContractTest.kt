@@ -2,7 +2,7 @@ package co.uk.cordacodeclube.contract
 
 import net.corda.core.contracts.*
 import net.corda.testing.node.MockServices
-import org.testng.annotations.Test
+import org.junit.Test
 
 /**
  * Practical exercise instructions for Contracts Part 1.
