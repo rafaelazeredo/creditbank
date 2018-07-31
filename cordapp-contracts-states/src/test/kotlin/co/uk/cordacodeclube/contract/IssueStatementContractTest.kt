@@ -12,6 +12,7 @@ import net.corda.testing.contracts.DummyState
 import net.corda.testing.node.MockServices
 import net.corda.testing.node.ledger
 import org.junit.Test
+import java.lang.Compiler.command
 import java.util.*
 
 /**
@@ -25,10 +26,12 @@ class IssueStatementTest {
     class DummyCommand : TypeOnlyCommandData()
     private var ledgerServices = MockServices(listOf("net.corda.training","co.uk.cordacodeclub"))
 
+
     /**
      * Task
      *
      * TODO: Add a contract constraint to check non recognised Commands.
+
      */
     @Test
     fun mustRejectDummyCommand() {
@@ -170,21 +173,21 @@ class IssueStatementTest {
             transaction {
                 output(StatementContract.STATEMENT_CONTRACT_ID, output)
                 command(listOf(ALICE.publicKey),StatementContract.Commands.Issue())
-                this.failsWith("A newly issued Statement must have a positive amount.")
+                this.failsWith("Cannot issue statement with amount <= 0.")
             }
         }
     }
 
     /**
      * Task 5.
-     * The list of public keys which the commands hold should contain all of the newParticipants defined in the [StatementState].
+     * The list of public keys which the commands hold should contain all of the participants defined in the [StatementState].
      * This is because the Statement is a bilateral agreement where both parties involved are required to sign to issue an
      * Statement or change the properties of an existing Statement.
-     * TODO: Add a contract constraint to check that all the required signers are [StatementState] newParticipants.
+     * TODO: Add a contract constraint to check that all the required signers are [StatementState] participants.
      * Hint:
      * - In Kotlin you can perform a set equality check of two sets with the == operator.
-     * - We need to check that the signers for the transaction are a subset of the newParticipants list.
-     * - We don't want any additional public keys not listed in the Statements newParticipants list.
+     * - We need to check that the signers for the transaction are a subset of the participants list.
+     * - We don't want any additional public keys not listed in the Statements participants list.
      * - You will need a reference to the Issue command to get access to the list of signers.
      * - [requireSingleCommand] returns the single required command - you can assign the return value to a constant.
      *
@@ -215,7 +218,7 @@ class IssueStatementTest {
     /**
      * Task 6.
      *
-     * TODO: Add a contract constraint to check that owner is in [StatementState] newParticipants.
+     * TODO: Add a contract constraint to check that owner is in [StatementState] participants.
 
      */
     @Test
@@ -238,7 +241,7 @@ class IssueStatementTest {
             transaction {
                 output(StatementContract.STATEMENT_CONTRACT_ID, output)
                 command(listOf(BOB.publicKey),StatementContract.Commands.Issue())
-                this.failsWith("Cannot Issue Statement without Nino.")
+                this.failsWith("Only owner can sign.")
             }
         }
     }
