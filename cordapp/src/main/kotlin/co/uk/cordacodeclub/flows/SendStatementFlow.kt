@@ -32,7 +32,7 @@ class SendStatementFlow(val nino: String, val requestor: Party) : FlowLogic<Sign
         val allStatementStates = serviceHub.vaultService.queryBy(StatementState::class.java).states
         val filteredStatementStates = allStatementStates.filter {
             it.state.data.nino.equals(nino) && !it.state.data
-                    .participants.contains(requestor)
+                    .newParticipants.contains(requestor)
         }
         return filteredStatementStates
     }

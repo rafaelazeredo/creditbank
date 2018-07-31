@@ -1,7 +1,9 @@
 package co.uk.cordacodeclub.state
 
 import net.corda.core.contracts.CommandAndState
+import net.corda.core.contracts.LinearState
 import net.corda.core.contracts.OwnableState
+import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.identity.AbstractParty
 import net.corda.core.identity.Party
 import java.util.*
@@ -19,8 +21,9 @@ data class StatementState private constructor (override val owner :AbstractParty
                                                val amountOverdue: Double?,
                                                val originalCreditAmountOrLimit: Double?,
                                                val responsibility: Responsibility = Responsibility.INDIVIDUAL,
-                                               var pariticpants : List<AbstractParty>
-) : OwnableState{
+                                               var newParticipants : List<AbstractParty>,
+                                               override val linearId: UniqueIdentifier
+) : OwnableState,LinearState{
 
     companion object{
         @JvmStatic
@@ -36,7 +39,8 @@ data class StatementState private constructor (override val owner :AbstractParty
                   responsibility: Responsibility = Responsibility.INDIVIDUAL):StatementState {
 
             return StatementState(owner, nino, dateReported, accountType, accountNumber, dateAccountOpened,
-                    amountOrLastBalance, amountOverdue, originalCreditAmountOrLimit, responsibility, listOf(owner))
+                    amountOrLastBalance, amountOverdue, originalCreditAmountOrLimit, responsibility, listOf(owner),
+                    UniqueIdentifier())
         }
     }
 
@@ -45,12 +49,12 @@ data class StatementState private constructor (override val owner :AbstractParty
     }
 
     fun addParticipants(newParticipant: Party):StatementState {
-        return copy(pariticpants = participants.plus(newParticipant));
+        return copy(newParticipants = participants.plus(newParticipant));
     }
 
 
 
-    override val participants : List<AbstractParty> get() = pariticpants
+    override val participants : List<AbstractParty> get() = newParticipants
 
 }
 
