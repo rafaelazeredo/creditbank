@@ -44,8 +44,7 @@ class IssueStatementFlow(val customerTransaction : CustomerTransaction) : FlowLo
     @Suspendable
     private fun initialiseStatementState(): StatementState {
 
-        val myParty = serviceHub.myInfo.legalIdentities[0]
-
+        val myParty = ourIdentity
         // some of this data that is currently null would either be included in data received or taken from accounts DB
         return StatementState.issue(owner = myParty,
                 nino = customerTransaction.nino,
