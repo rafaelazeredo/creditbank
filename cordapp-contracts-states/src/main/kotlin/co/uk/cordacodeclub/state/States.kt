@@ -1,6 +1,7 @@
 package co.uk.cordacodeclub.state
 
 import net.corda.core.contracts.CommandAndState
+import net.corda.core.contracts.ContractState
 import net.corda.core.contracts.OwnableState
 import net.corda.core.identity.AbstractParty
 import net.corda.core.identity.Party
@@ -62,3 +63,13 @@ enum class AccountType {
 enum class Responsibility{
     INDIVIDUAL, JOINT
 }
+
+data class RequestState private constructor ( val nino: String): ContractState{
+    companion object{
+        @JvmStatic
+        fun issue(nino: String): RequestState { return RequestState( nino) }
+    }
+    override val participants: List<AbstractParty> = listOf()
+
+}
+
