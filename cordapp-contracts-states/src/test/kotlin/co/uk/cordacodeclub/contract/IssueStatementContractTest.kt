@@ -1,20 +1,17 @@
-package co.uk.cordacodeclube.contract
+package co.uk.cordacodeclub.contract
 
 
-import co.uk.cordacodeclub.contract.StatementContract
 import co.uk.cordacodeclub.state.AccountType
 import co.uk.cordacodeclub.state.Responsibility
 import co.uk.cordacodeclub.state.StatementState
-import co.uk.cordacodeclube.state.ALICE
-import co.uk.cordacodeclube.state.BOB
+import co.uk.cordacodeclub.ALICE
+import co.uk.cordacodeclub.BOB
 import net.corda.core.contracts.*
 import net.corda.testing.contracts.DummyState
 import net.corda.testing.node.MockServices
 import net.corda.testing.node.ledger
-import org.junit.Test
-import java.lang.Compiler.command
+import org.junit.*
 import java.util.*
-
 /**
  * Practical exercise instructions for Contracts Part 1.
  * The objective here is to write some contract code that verifies a transaction to issue an [StatementState].
@@ -24,7 +21,7 @@ import java.util.*
 class IssueStatementTest {
     // A pre-defined dummy command.
     class DummyCommand : TypeOnlyCommandData()
-    private var ledgerServices = MockServices(listOf("net.corda.training","co.uk.cordacodeclub"))
+    private var ledgerServices = MockServices(listOf("co.uk.cordacodeclub","net.corda.node","net.corda.training"))
 
 
     /**
@@ -40,7 +37,7 @@ class IssueStatementTest {
             transaction {
                 output(StatementContract.STATEMENT_CONTRACT_ID, statement)
                 command(listOf(ALICE.publicKey), DummyCommand())
-                this.failsWith("Command not found.")
+                this.fails()
             }
         }
     }
@@ -173,7 +170,7 @@ class IssueStatementTest {
             transaction {
                 output(StatementContract.STATEMENT_CONTRACT_ID, output)
                 command(listOf(ALICE.publicKey),StatementContract.Commands.Issue())
-                this.failsWith("Cannot issue statement with amount <= 0.")
+                this.failsWith("A newly issued Statement must have a positive amount.")
             }
         }
     }
@@ -199,7 +196,7 @@ class IssueStatementTest {
      */
     @Test
     fun ownerMustSignIssueTransaction() {
-        val output = issueStatementStateWithZeroAmount()
+        val output = issueStatementState()
 
         ledgerServices.ledger {
             transaction {
@@ -270,7 +267,7 @@ class IssueStatementTest {
         // how to create Statement with null AccountType??
     }
 
-    private fun issueStatementStateWithZeroAmount() = issueStatementState(null,0.0)
+    private fun issueStatementStateWithZeroAmount() = issueStatementState("ST123DT",0.0)
 
     private fun issueStatementStateEmptyNino() = issueStatementState("")
 

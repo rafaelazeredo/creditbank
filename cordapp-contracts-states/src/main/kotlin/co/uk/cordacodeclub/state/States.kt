@@ -6,6 +6,7 @@ import net.corda.core.contracts.OwnableState
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.identity.AbstractParty
 import net.corda.core.identity.Party
+import net.corda.core.serialization.CordaSerializable
 import java.util.*
 
 // *********
@@ -58,11 +59,12 @@ data class StatementState private constructor (override val owner :AbstractParty
 
 }
 
-
+@CordaSerializable
 enum class AccountType {
     DEBIT, CREDIT, MORTGAGE, AUTOLOAN
 }
 
+@CordaSerializable
 enum class Responsibility{
     INDIVIDUAL, JOINT
 }

@@ -1,4 +1,4 @@
-package co.uk.cordacodeclube.contract
+package co.uk.cordacodeclub.contract
 
 import net.corda.core.contracts.*
 import net.corda.testing.node.MockServices

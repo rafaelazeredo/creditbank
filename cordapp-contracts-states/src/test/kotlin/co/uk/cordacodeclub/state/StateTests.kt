@@ -1,13 +1,10 @@
-package co.uk.cordacodeclube.state
+package co.uk.cordacodeclub.state
 
-import co.uk.cordacodeclub.state.AccountType
-import co.uk.cordacodeclub.state.Responsibility
+import co.uk.cordacodeclub.ALICE
+import co.uk.cordacodeclub.BOB
 import org.junit.Test
 
-import co.uk.cordacodeclub.state.StatementState
 import net.corda.core.identity.AbstractParty
-import net.corda.core.identity.CordaX500Name
-import net.corda.core.identity.Party
 import org.junit.Assert.assertEquals
 import java.util.*
 
@@ -78,18 +75,18 @@ class StateTests{
 
     @Test
     fun `Issue command should create a state`(){
-        val initialState = StatementState.issue(ALICE .party,"12345",Date(),AccountType.AUTOLOAN,"123",Date(),
+        val initialState = StatementState.issue(ALICE.party,"12345",Date(),AccountType.AUTOLOAN,"123",Date(),
                 123.3,55.5,1500.00,Responsibility.INDIVIDUAL)
         assertEquals(initialState::class.java, StatementState::class.java)
     }
 
     @Test
     fun `Add participant command should add a participant`(){
-        val initialState = StatementState.issue(ALICE .party,"12345",Date(),AccountType.AUTOLOAN,"123",Date(),
+        val initialState = StatementState.issue(ALICE.party,"12345",Date(),AccountType.AUTOLOAN,"123",Date(),
                 123.3,55.5,1500.00,Responsibility.INDIVIDUAL)
-        assert(initialState.pariticpants.size == 1)
+        assert(initialState.participants.size == 1)
         val newState = initialState.addParticipants(BOB.party)
-        assert(newState.pariticpants.size == 2)
+        assert(newState.participants.size == initialState.participants.size + 1)
     }
 
 

@@ -11,11 +11,13 @@ buildscript {
         mavenLocal()
         mavenCentral()
         jcenter()
+        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
     }
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "net.corda.plugins:cordapp:$corda_gradle_plugins_version"
+        classpath "net.corda.plugins:publish-utils:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:cordformation:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:quasar-utils:$corda_gradle_plugins_version"
     }
@@ -30,9 +32,12 @@ repositories {
 }
 
 apply plugin: 'kotlin'
+apply plugin: 'idea'
 apply plugin: 'net.corda.plugins.cordapp'
+apply plugin: 'net.corda.plugins.publish-utils'
 apply plugin: 'net.corda.plugins.cordformation'
 apply plugin: 'net.corda.plugins.quasar-utils'
+apply plugin: 'maven-publish'
 
 sourceSets {
     main {
@@ -74,7 +79,7 @@ dependencies {
     cordaRuntime "$corda_release_group:corda:$corda_release_version"
     cordaRuntime "$corda_release_group:corda-webserver:$corda_release_version"
 
-
+    testCompile "$corda_release_group:corda-test-utils:$corda_release_version"
     testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
 
     // CorDapp dependencies

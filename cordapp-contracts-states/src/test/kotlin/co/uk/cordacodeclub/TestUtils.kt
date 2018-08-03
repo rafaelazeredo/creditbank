@@ -1,4 +1,4 @@
-package co.uk.cordacodeclube.state
+package co.uk.cordacodeclub
 
 import net.corda.core.identity.CordaX500Name
 import net.corda.testing.core.TestIdentity
