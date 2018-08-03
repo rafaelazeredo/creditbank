@@ -1,5 +1,6 @@
 package co.uk.cordacodeclub.api
 
+import co.uk.cordacodeclub.flows.IssueStatementFlow
 import co.uk.cordacodeclub.state.AccountType
 import net.corda.core.node.AppServiceHub
 import net.corda.core.serialization.CordaSerializable
@@ -14,7 +15,8 @@ interface CreditBankApi {
     fun addTransaction(customerTransaction: CustomerTransaction)
 }
 
-class CreditbankApiImpl(serviceHub: AppServiceHub) : CreditBankApi {
+class CreditbankApiImpl(val serviceHub: AppServiceHub) : CreditBankApi {
+
 
     override fun getLastTransaction() : CustomerTransaction {
         return CustomerTransaction("NB808883D",
@@ -25,8 +27,9 @@ class CreditbankApiImpl(serviceHub: AppServiceHub) : CreditBankApi {
                                    true)
     }
 
+
     override fun addTransaction(customerTransaction: CustomerTransaction) {
         println("Gonna stick stuff in the ledger $customerTransaction")
-        service
+        serviceHub.startFlow(IssueStatementFlow(customerTransaction))
     }
 }
