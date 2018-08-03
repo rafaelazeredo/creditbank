@@ -8,8 +8,10 @@ import co.uk.cordacodeclub.state.StatementState
 import net.corda.core.contracts.Command
 import net.corda.core.contracts.StateAndContract
 import net.corda.core.contracts.StateAndRef
+import net.corda.core.contracts.TransactionState
 import net.corda.core.flows.*
 import net.corda.core.identity.Party
+import net.corda.core.node.StatesToRecord
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
 
@@ -63,10 +65,34 @@ class RequestStatementFlow(val nino: String) : FlowLogic<SignedTransaction>() {
 }
 
 @InitiatedBy(BroadcastTransaction::class)
-class RequestResponderFlow(val nino: String) : FlowLogic<Unit>() {
+class RequestResponderFlow(val otherSession: FlowSession ) : FlowLogic<Unit>() {
 
     @Suspendable
     override fun call() {
+        val tx = subFlow(ReceiveTransactionFlow(otherSession))   //checkSufficientSignatures: Boolean = true,
+        val state = tx.coreTransaction.outputStates.first()
+//        stat
+//        @InitiatedBy(IOUSettleFlow::class)
+//        class IOUSettleFlowResponder(val flowSession: FlowSession): FlowLogic<Unit>() {
+//            @Suspendable
+//            override fun call() {
+//
+//                // Receiving information about anonymous identities
+//                subFlow(IdentitySyncFlow.Receive(flowSession))
+//
+//                // signing transaction
+//                val signedTransactionFlow = object : SignTransactionFlow(flowSession) {
+//                    override fun checkTransaction(stx: SignedTransaction) {
+//                    }
+//                }
+//
+//                subFlow(signedTransactionFlow)
+//            }
+//        }
+
+
+
+
         if (checkPresent())
             subFlow(SendStatementFlow(nino, serviceHub.myInfo.legalIdentities[0]))
     }
@@ -100,5 +126,35 @@ class BroadcastTransaction(val stx: SignedTransaction) : FlowLogic<Unit>() {
         // Send the transaction to all the remaining parties.
         sessions.forEach { subFlow(SendTransactionFlow(it, stx)) }
     }
+
+}
+
+//@InitiatingFlow
+//class BroadcastStateAndRef(val statement: StatementState) : FlowLogic<Unit>() {
+//    @Suspendable
+//    fun getNotary(): Party {
+//        val notary = serviceHub.networkMapCache.notaryIdentities.first();
+//        return notary
+//    }
+//    @Suspendable
+//    override fun call() {
+//        // Get a list of all identities from the network map cache.
+//        val everyone = serviceHub.networkMapCache.allNodes.flatMap { it.legalIdentities }
+//
+//        // Filter out the notary identities and remove our identity.
+//        val everyoneButMeAndNotary = everyone.filter { serviceHub.networkMapCache.isNotary(it).not() } - ourIdentity
+//
+//        // Create a session for each remaining party.
+//        val sessions = everyoneButMeAndNotary.map { initiateFlow(it) }
+//
+//        // Send the transaction to all the remaining parties.
+////        sessions.forEach { subFlow(SendTransactionFlow(it, stx)) }
+//        sessions.forEach { subFlow(SendStateAndRefFlow(it,
+//                listOf(StateAndRef(TransactionState<StatementState>(statement,
+//                        StatementContract.STATEMENT_CONTRACT_ID,
+//                        getNotary())
+//                                   ), StatementContract.STATEMENT_CONTRACT_ID, )))
+//    }
+
 
 }
