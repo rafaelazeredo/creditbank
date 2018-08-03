@@ -9,8 +9,9 @@ import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 import io.bluebank.braid.corda.rest.RestConfig
 import io.vertx.core.http.HttpServerOptions
+import java.io.*
 
-const val BRAID_CONFIG_FILENAME = "braid-config.json"
+const val BRAID_CONFIG_FILENAME = "C:\\personal\\codestuff\\kotlin\\corda\\creditbank\\config\\dev\\braid-config.json"
 const val BRAID_DISABLED_PORT = -1
 private const val BRAID_PORT_FIELD = "port"
 
@@ -118,8 +119,9 @@ class CreditBankApiService(serviceHub : AppServiceHub) : SingletonSerializeAsTok
 object Resources {
   @Throws(IllegalArgumentException::class)
   fun loadResourceAsString(path: String): String {
-    val stream = ClassLoader.getSystemClassLoader().getResourceAsStream(path)
-      ?: throw IllegalArgumentException("could not locate resource $path")
+    val stream  =FileInputStream(File(path))
+//    val stream = ClassLoader.getSystemClassLoader().getResourceAsStream(path)
+//      ?: throw IllegalArgumentException("could not locate resource $path")
 
     return stream.use {
       val scanner = java.util.Scanner(stream).useDelimiter("\\A")

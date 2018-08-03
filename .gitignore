@@ -73,3 +73,4 @@ crashlytics-build.properties
 # docs related
 docs/virtualenv/
 **/.vertx
+bash.exe.stackdump
