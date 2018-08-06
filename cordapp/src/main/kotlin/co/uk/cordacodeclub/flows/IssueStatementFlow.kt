@@ -83,8 +83,7 @@ class IssueStatementFlow(val customerTransaction : CustomerTransaction) : FlowLo
 
     @Suspendable
     private fun addOutputStateToTransaction(state: StatementState, txBuilder: TransactionBuilder) {
-            txBuilder.addOutputState(state, "co.uk.cordacodeclub.contract.StatementContract")
-        // co.uk.cordacodeclub.contract.StatementContract
+            txBuilder.addOutputState(state, StatementContract.STATEMENT_CONTRACT_ID)  // co.uk.cordacodeclub.contract.StatementContract
     }
 
 
