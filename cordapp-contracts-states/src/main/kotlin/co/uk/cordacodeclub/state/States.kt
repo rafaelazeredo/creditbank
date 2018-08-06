@@ -5,6 +5,7 @@ import net.corda.core.contracts.ContractState
 import net.corda.core.contracts.OwnableState
 import net.corda.core.identity.AbstractParty
 import net.corda.core.identity.Party
+import net.corda.core.serialization.CordaSerializable
 import java.util.*
 
 // *********
@@ -55,16 +56,16 @@ data class StatementState private constructor (override val owner :AbstractParty
 
 }
 
-
+@CordaSerializable
 enum class AccountType {
     DEBIT, CREDIT, MORTGAGE, AUTOLOAN
 }
-
+@CordaSerializable
 enum class Responsibility{
     INDIVIDUAL, JOINT
 }
-
-data class RequestState private constructor ( val nino: String): ContractState{
+@CordaSerializable
+class RequestState private constructor ( val nino: String): ContractState{
     companion object{
         @JvmStatic
         fun issue(nino: String): RequestState { return RequestState( nino) }

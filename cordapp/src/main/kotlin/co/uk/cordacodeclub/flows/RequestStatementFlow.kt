@@ -10,7 +10,7 @@ import net.corda.core.identity.Party
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.unwrap
 
-
+@StartableByService
 @StartableByRPC
 class RequestStatementFlow(val nino: String) : FlowLogic<Unit>() {
     // TODO
@@ -40,7 +40,6 @@ class RequestStatementFlow(val nino: String) : FlowLogic<Unit>() {
 //        val fullySignedTransaction = serviceHub.signInitialTransaction(txBuilder)
 
         // Send the request transaction to all the remaining parties.
-
         subFlow(BroadcastTransaction(nino))
     }
     @Suspendable
@@ -65,6 +64,8 @@ class BroadcastTransaction(val nino: String) : FlowLogic<Unit>() {
 
     @Suspendable
     override fun call() {
+        println("Sending request to other nodes from: $ourIdentity")
+
         // Get a list of all identities from the network map cache.
         val everyone = serviceHub.networkMapCache.allNodes.flatMap { it.legalIdentities }
 
@@ -86,9 +87,11 @@ class RequestResponderFlow(val counterPartySession : FlowSession) : FlowLogic<Un
 
     @Suspendable
     override fun call() {
+        println("${ourIdentity} received request from ${counterPartySession.counterparty}")
         val nino:String  = counterPartySession.receive(String::class.java).unwrap({it})
         if (checkForStatementInVaultForRequestor(nino, counterPartySession.counterparty))
-            subFlow(SendStatementFlow(nino, ourIdentity))
+            println("${ourIdentity} found statement, sending back to ${counterPartySession.counterparty}")
+            subFlow(SendStatementFlow(nino, counterPartySession.counterparty))
 
     }
 
