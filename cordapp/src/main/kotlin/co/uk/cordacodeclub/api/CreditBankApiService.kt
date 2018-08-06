@@ -119,7 +119,7 @@ class CreditBankApiService(serviceHub : AppServiceHub) : SingletonSerializeAsTok
 object Resources {
   @Throws(IllegalArgumentException::class)
   fun loadResourceAsString(path: String): String {
-    val stream  =FileInputStream(File(path))
+    val stream  = FileInputStream(File(path))
 //    val stream = ClassLoader.getSystemClassLoader().getResourceAsStream(path)
 //      ?: throw IllegalArgumentException("could not locate resource $path")
 

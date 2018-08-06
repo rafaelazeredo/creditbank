@@ -219,7 +219,6 @@ class IssueStatementTest {
      * Task 6.
      *
      * TODO: Add a contract constraint to check that owner is in [StatementState] participants.
-
      */
     @Test
     fun participantsListHasOwnerIssueTransaction() {
