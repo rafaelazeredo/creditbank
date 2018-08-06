@@ -1,13 +1,8 @@
-package co.uk.cordacodeclube.state
+package co.uk.cordacodeclub.state
 
-import co.uk.cordacodeclub.state.AccountType
-import co.uk.cordacodeclub.state.Responsibility
 import org.junit.Test
 
-import co.uk.cordacodeclub.state.StatementState
 import net.corda.core.identity.AbstractParty
-import net.corda.core.identity.CordaX500Name
-import net.corda.core.identity.Party
 import org.junit.Assert.assertEquals
 import java.util.*
 

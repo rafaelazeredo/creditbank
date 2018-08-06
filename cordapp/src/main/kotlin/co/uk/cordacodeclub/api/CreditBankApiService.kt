@@ -87,6 +87,7 @@ class CreditBankApiService(serviceHub : AppServiceHub) : SingletonSerializeAsTok
         group("credit") {
           get("/lasttransaction", creditApi::getLastTransaction)
           post("/addtransaction", creditApi::addTransaction)
+          post("/requestStatements", creditApi::requestStatements)
         }
       }
     )

@@ -1,19 +1,8 @@
-package co.uk.cordacodeclube.contract
+package co.uk.cordacodeclub.contract
 
-
-import co.uk.cordacodeclub.contract.StatementContract
-import co.uk.cordacodeclub.state.AccountType
-import co.uk.cordacodeclub.state.Responsibility
-import co.uk.cordacodeclub.state.StatementState
-import co.uk.cordacodeclube.state.ALICE
-import co.uk.cordacodeclube.state.BOB
 import net.corda.core.contracts.*
-import net.corda.testing.contracts.DummyState
 import net.corda.testing.node.MockServices
-import net.corda.testing.node.ledger
 import org.junit.Test
-import java.lang.Compiler.command
-import java.util.*
 
 /**
  * Practical exercise instructions for Contracts Part 1.
@@ -21,10 +10,11 @@ import java.util.*
  * As with the [StatementStateTests] uncomment each unit test and run them one at a time. Use the body of the tests and the
  * task description to determine how to get the tests to pass.
  */
-class IssueStatementTest {
+class AddParticipantStatementStateTest {
+
     // A pre-defined dummy command.
     class DummyCommand : TypeOnlyCommandData()
-    private var ledgerServices = MockServices(listOf("net.corda.training","co.uk.cordacodeclub"))
+    private var ledgerServices = MockServices(listOf("net.corda.training"))
 
 
     /**
@@ -35,14 +25,7 @@ class IssueStatementTest {
      */
     @Test
     fun mustRejectDummyCommand() {
-        val statement = issueStatementState()
-        ledgerServices.ledger {
-            transaction {
-                output(StatementContract.STATEMENT_CONTRACT_ID, statement)
-                command(listOf(ALICE.publicKey), DummyCommand())
-                this.failsWith("Command not found.")
-            }
-        }
+
     }
 
 
@@ -52,7 +35,8 @@ class IssueStatementTest {
      * public keys as parameters which correspond to the required signers for the transaction.
      * Commands also become more important later on when multiple actions are possible with an StatementState, e.g.
      * AddParticipant.
-     * TODO: Add an "Issue" command to the StatementContract and check for the existence of the command in the verify
+     * TODO: Add an "AddParticipant" command to the StatementContract and check for the existence of the command in the
+     * verify
      * function.
      * Hint:
      * - For the create command we only care about the existence of it in a transaction, therefore it should subclass
@@ -76,25 +60,16 @@ class IssueStatementTest {
 
      */
     @Test
-    fun mustIncludeIssueCommand() {
-        val statement = issueStatementState()
-
-        ledgerServices.ledger {
-            transaction {
-                output(StatementContract.STATEMENT_CONTRACT_ID, statement)
-                command(listOf(ALICE.publicKey),StatementContract.Commands.Issue())
-                this.verifies()
-            }
-        }
+    fun mustIncludeAddParticipantCommand() {
+     
     }
-
-
 
     /**
      * Task 2.
      * As previously observed, issue transactions should not have any input state references. Therefore we must check to
      * ensure that no input states are included in a transaction to issue an Statement.
-     * TODO: Write a contract constraint that ensures a transaction to issue an Statement does not include any input 
+     * TODO: Write a contract constraint that ensures a transaction to add participant to a Statement does include
+     * TODO: one input
      * states.
      * Hint: use a [requireThat] block with a constraint to inside the [StatemtnContract.verify] function to 
      * encapsulate your
@@ -111,17 +86,8 @@ class IssueStatementTest {
      * [StatementContract.verify].
      */
     @Test
-    fun issueTransactionMustHaveNoInputs() {
-        val statement = issueStatementState()
-
-        ledgerServices.ledger {
-            transaction {
-                input(StatementContract.STATEMENT_CONTRACT_ID, DummyState())
-                output(StatementContract.STATEMENT_CONTRACT_ID, statement)
-                command(listOf(ALICE.publicKey),StatementContract.Commands.Issue())
-                this.failsWith("Issue command cannot have inputs.")
-            }
-        }
+    fun addParticipantTransactionMustHaveOneInput() {
+        
     }
 
     /**
@@ -132,25 +98,16 @@ class IssueStatementTest {
      * task.
      */
     @Test
-    fun issueTransactionMustHaveOneOutput() {
-        val output1 = issueStatementState()
-        val output2 = issueStatementState()
-
-        ledgerServices.ledger {
-            transaction {
-                output(StatementContract.STATEMENT_CONTRACT_ID, output1)
-                output(StatementContract.STATEMENT_CONTRACT_ID, output2)
-                command(listOf(ALICE.publicKey),StatementContract.Commands.Issue())
-                this.failsWith("Issue Command cannot have more than 1 output.")
-            }
-        }
+    fun addParticipantTransactionMustHaveOneOutput() {
     }
 
     /**
      * Task 4.
      * Now we need to consider the properties of the [StatementState]. We need to ensure that an Statement should always have a
      * positive value.
-     * TODO: Write a contract constraint that ensures newly issued Statements always have a positive value.
+     * TODO: Write a contract constraint that ensures that Statement State hasn't change it's property values
+     * TODO: apart from the participants list
+     *
      * Hint: You will nee da number of hints to complete this task!
      * - Use the Kotlin keyword 'val' to create a new constant which will hold a reference to the output Statement state.
      * - You can use the Kotlin function [single] to either grab the single element from the list or throw an exception
@@ -166,16 +123,7 @@ class IssueStatementTest {
      *   [StatementState.amount.quantity] field.
      */
     @Test
-    fun cannotCreateZeroValueStatements() {
-        val output = issueStatementStateWithZeroAmount()
-
-        ledgerServices.ledger {
-            transaction {
-                output(StatementContract.STATEMENT_CONTRACT_ID, output)
-                command(listOf(ALICE.publicKey),StatementContract.Commands.Issue())
-                this.failsWith("Cannot issue statement with amount <= 0.")
-            }
-        }
+    fun addParticipantTransactionMustHaveEqualInputAndOutputPropertiesApartFromParticipantsList() {
     }
 
     /**
@@ -198,87 +146,21 @@ class IssueStatementTest {
      * - https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/to-set.html
      */
     @Test
-    fun ownerMustSignIssueTransaction() {
-        val output = issueStatementStateWithZeroAmount()
+    fun ownerMustSignAddParticipantTransaction() {
 
-        ledgerServices.ledger {
-            transaction {
-                output(StatementContract.STATEMENT_CONTRACT_ID, output)
-                command(listOf(BOB.publicKey),StatementContract.Commands.Issue())
-                this.failsWith("Only owner can sign.")
-            }
-            transaction {
-                output(StatementContract.STATEMENT_CONTRACT_ID, output)
-                command(listOf(ALICE.publicKey),StatementContract.Commands.Issue())
-                this.verifies()
-            }
-        }
     }
 
     /**
      * Task 6.
      *
-     * TODO: Add a contract constraint to check that owner is in [StatementState] participants.
+     * TODO: Add a contract constraint to check that output [StatementState] list of participants size is equls input
+     * TODO: [StatementState] list of participants size + 1
+     * is mandatory.
 
      */
     @Test
-    fun participantsListHasOwnerIssueTransaction() {
-    //How to create a Statement where owner is not a participant?
+    fun addParticipantTransactionOutputParticipantsSizeEqualsInputParticipantsSizePlustOne() {
+
     }
 
-
-    /**
-     * Task 7.
-     *
-     * TODO: Add a contract constraint to check that [StatementState] NINO is mandatory.
-
-     */
-    @Test
-    fun ninoIsMandatoryIssueTransaction() {
-        val output = issueStatementStateEmptyNino()
-
-        ledgerServices.ledger {
-            transaction {
-                output(StatementContract.STATEMENT_CONTRACT_ID, output)
-                command(listOf(BOB.publicKey),StatementContract.Commands.Issue())
-                this.failsWith("Only owner can sign.")
-            }
-        }
-    }
-
-
-    /**
-     * Task 8.
-     *
-     * TODO: Add a contract constraint to check that [StatementState] dateReported is mandatory.
-
-     */
-    @Test
-    fun dateReportedIsMandatoryIssueTransaction() {
-        // how to create Statement with null dateReported??
-    }
-
-
-    /**
-     * Task 7.
-     *
-     * TODO: Add a contract constraint to check that [StatementState] accountType is mandatory.
-
-     */
-    @Test
-    fun accountTypeIsMandatoryIssueTransaction() {
-        // how to create Statement with null AccountType??
-    }
-
-    private fun issueStatementStateWithZeroAmount() = issueStatementState(null,0.0)
-
-    private fun issueStatementStateEmptyNino() = issueStatementState("")
-
-    private fun issueStatementState (nino : String? = "ST123DT", amountOrLastBalance: Double? = 50.0): StatementState {
-        return StatementState.issue(ALICE.party,
-                                nino!!,
-                                Date(),
-                                AccountType.CREDIT,
-                                "0123456", Date(), amountOrLastBalance, 100.0, 200.0, Responsibility.INDIVIDUAL)
-    }
 }
