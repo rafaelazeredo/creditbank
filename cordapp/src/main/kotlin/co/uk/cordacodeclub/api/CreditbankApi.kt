@@ -31,7 +31,6 @@ class CreditbankApiImpl(val serviceHub: AppServiceHub) : CreditBankApi {
 
 
     override fun addTransaction(customerTransaction: CustomerTransaction) {
-        println("Gonna stick stuff in the ledger $customerTransaction")
         serviceHub.startFlow(IssueStatementFlow(customerTransaction))
     }
 

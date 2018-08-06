@@ -29,7 +29,7 @@ class IssueStatementFlow(val customerTransaction : CustomerTransaction) : FlowLo
 
     @Suspendable
     override fun call(): SignedTransaction {
-
+        println("$ourIdentity Gonna stick stuff in the ledger $customerTransaction")
         val state = initialiseStatementState()
 
         val txBuilder = createTransactionBuilder(state)
